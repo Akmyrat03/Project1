@@ -1,0 +1,7 @@
+# Ignore the Go binary files
+*.exe
+*.out
+
+# Ignore vendor directory
+/vendor/
+
