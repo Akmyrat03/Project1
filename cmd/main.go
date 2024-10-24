@@ -3,6 +3,8 @@ package main
 import (
 	"log"
 
+	userRoutes "github.com/akmyrat/project1/internal/users/routes"
+
 	"github.com/akmyrat/project1/pkg/database/dbcon"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -10,6 +12,7 @@ import (
 )
 
 func main() {
+	// gin.SetMode(gin.DebugMode)
 	gin.SetMode(gin.ReleaseMode)
 
 	// Load .env file
@@ -41,12 +44,15 @@ func main() {
 	defer DB.Close()
 
 	app := gin.Default()
+	api := app.Group("/api")
+	userRoutes.InitUserRoutes(api, DB)
 
 	log.Println("Starting the app in release mode on localhost:8000")
 
 	if err := app.Run("localhost:8000"); err != nil {
 		log.Fatalf("Failed running app: %v", err)
 	}
+
 }
 
 func initConfig() error {

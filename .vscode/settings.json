@@ -7,8 +7,8 @@
             "askForPassword": true,
             "driver": "PostgreSQL",
             "name": "postgres1",
-            "username": "postgres",
-            "database": "project1"
+            "database": "project1",
+            "username": "postgres"
         }
     ]
 }
