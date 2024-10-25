@@ -40,3 +40,9 @@ func (r *UserRepository) GetUser(username, password string) (model.User, error) 
 	}
 	return user, nil
 }
+
+func (r *UserRepository) DeleteUser(UserId int) error {
+	query := fmt.Sprintf(`DELETE FROM %v WHERE id = $1`, Users)
+	_, err := r.DB.Exec(query, UserId)
+	return err
+}

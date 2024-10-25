@@ -55,3 +55,7 @@ func generateHashedPassword(password string) string {
 	hash.Write([]byte(password))
 	return fmt.Sprintf("%x", hash.Sum([]byte(salt)))
 }
+
+func (s *UserService) DeleteUser(UserId int) error {
+	return s.repo.DeleteUser(UserId)
+}

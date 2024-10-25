@@ -3,8 +3,8 @@ package main
 import (
 	"log"
 
+	categoryRoutes "github.com/akmyrat/project1/internal/category/routes"
 	userRoutes "github.com/akmyrat/project1/internal/users/routes"
-
 	"github.com/akmyrat/project1/pkg/database/dbcon"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -46,6 +46,7 @@ func main() {
 	app := gin.Default()
 	api := app.Group("/api")
 	userRoutes.InitUserRoutes(api, DB)
+	categoryRoutes.InitCategoryRoutes(api, DB)
 
 	log.Println("Starting the app in release mode on localhost:8000")
 

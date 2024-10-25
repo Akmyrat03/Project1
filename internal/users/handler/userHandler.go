@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/akmyrat/project1/internal/users/model"
 	"github.com/akmyrat/project1/internal/users/service"
@@ -56,4 +57,20 @@ func (h *UserHandler) SignIn(c *gin.Context) {
 		"token": token,
 	})
 
+}
+
+func (h *UserHandler) DeleteUser(c *gin.Context) {
+	userId := c.Param("id")
+	id, err := strconv.Atoi(userId)
+	if err != nil {
+		handler.NewErrorResponse(c, http.StatusBadRequest, "Invalid user ID")
+		return
+	}
+
+	if err := h.service.DeleteUser(id); err != nil {
+		handler.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "User deleted successfully"})
 }

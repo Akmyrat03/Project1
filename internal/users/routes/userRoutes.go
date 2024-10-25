@@ -16,4 +16,5 @@ func InitUserRoutes(router *gin.RouterGroup, DB *sqlx.DB) {
 	userRoutes := router.Group("/users")
 	userRoutes.POST("/sign-up", userHandler.SignUp)
 	userRoutes.POST("/sign-in", userHandler.SignIn)
+	userRoutes.DELETE("/:id", userHandler.DeleteUser)
 }
