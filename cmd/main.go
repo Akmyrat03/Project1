@@ -4,6 +4,7 @@ import (
 	"log"
 
 	categoryRoutes "github.com/akmyrat/project1/internal/category/routes"
+	postRoutes "github.com/akmyrat/project1/internal/post/routes"
 	userRoutes "github.com/akmyrat/project1/internal/users/routes"
 	"github.com/akmyrat/project1/pkg/database/dbcon"
 	"github.com/gin-gonic/gin"
@@ -47,6 +48,7 @@ func main() {
 	api := app.Group("/api")
 	userRoutes.InitUserRoutes(api, DB)
 	categoryRoutes.InitCategoryRoutes(api, DB)
+	postRoutes.InitPostRoutes(api, DB)
 
 	log.Println("Starting the app in release mode on localhost:8000")
 
