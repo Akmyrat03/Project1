@@ -23,3 +23,5 @@
 --     image_path VARCHAR(255)
 -- );
 
+
+SELECT id, title, description, image_path FROM posts;

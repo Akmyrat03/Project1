@@ -15,4 +15,8 @@ func InitPostRoutes(router *gin.RouterGroup, DB *sqlx.DB) {
 
 	postRoutes := router.Group("/post")
 	postRoutes.POST("/add", postHandler.CreatePost)
+	postRoutes.DELETE("/delete/:id", postHandler.DeletePostByID)
+	postRoutes.GET("/all", postHandler.GetAllPosts)
+	postRoutes.GET("/:id", postHandler.GetPostByID)
+	postRoutes.PUT("/update/:id", postHandler.UpdatePostByID)
 }

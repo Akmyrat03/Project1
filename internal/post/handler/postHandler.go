@@ -1,8 +1,10 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 	"path/filepath"
+	"strconv"
 
 	"github.com/akmyrat/project1/internal/post/model"
 	"github.com/akmyrat/project1/internal/post/service"
@@ -64,5 +66,79 @@ func (h *PostHandler) CreatePost(c *gin.Context) {
 	// Basarili olursa json formatinda yanit gonderilir
 	c.JSON(200, gin.H{
 		"data": newPost,
+	})
+}
+
+func (h *PostHandler) DeletePostByID(c *gin.Context) {
+	idParam := c.Param("id")
+	id, err := strconv.Atoi(idParam)
+	if err != nil {
+		handler.NewErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	err = h.service.DeletePostByID(id)
+	if err != nil {
+		handler.NewErrorResponse(c, http.StatusBadRequest, "doesn't implement service")
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Post deleted successfully",
+	})
+}
+
+func (h *PostHandler) GetAllPosts(c *gin.Context) {
+	posts, err := h.service.GetAllPosts()
+	if err != nil {
+		fmt.Print(err)
+		c.JSON(500, err.Error())
+		return
+	}
+
+	c.JSON(200, gin.H{
+		"data": posts,
+	})
+}
+
+func (h *PostHandler) GetPostByID(c *gin.Context) {
+	idParam := c.Param("id")
+	id, err := strconv.Atoi(idParam)
+	if err != nil {
+		c.JSON(400, "invalid id")
+		return
+	}
+	post, err := h.service.GetPostByID(id)
+	if err != nil {
+		fmt.Print(err)
+		c.JSON(500, err.Error())
+		return
+	}
+
+	c.JSON(200, post)
+}
+
+func (h *PostHandler) UpdatePostByID(c *gin.Context) {
+	idParam := c.Param("id")
+	id, err := strconv.Atoi(idParam)
+	if err != nil {
+		c.JSON(400, "invalid id")
+		return
+	}
+
+	var updatedPost model.Post
+	if err := c.BindJSON(&updatedPost); err != nil {
+		handler.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	if err := h.service.UpdatePostByID(id, &updatedPost); err != nil {
+		handler.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Post updated successfully",
 	})
 }
