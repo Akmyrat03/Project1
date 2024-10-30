@@ -5,11 +5,14 @@
 --     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
 -- );
 
+-- CREATE TYPE user_role AS ENUM ('admin', 'user');
+
 -- CREATE TABLE users (
 --     id SERIAL PRIMARY KEY,
 --     name VARCHAR(255) NOT NULL,
 --     username VARCHAR(255) NOT NULL UNIQUE,
---     password VARCHAR(255) 
+--     password VARCHAR(255),
+--     role user_role NOT NULL
 -- );
 
 -- CREATE TABLE posts (
@@ -24,4 +27,3 @@
 -- );
 
 
-SELECT id, title, description, image_path FROM posts;

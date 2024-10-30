@@ -15,14 +15,13 @@ var (
 	signingKey = []byte("###%5645646566")
 )
 
-type tokenClaims struct {
-	jwt.StandardClaims //It IssuedAt , ExpiresAt informations hold
-
-	UserId int `json:"user_id"`
-}
-
 type UserService struct {
 	repo *repository.UserRepository
+}
+
+type RoleBasedClaims struct {
+	jwt.StandardClaims     //It IssuedAt , ExpiresAt informations hold
+	UserId             int `json:"user_id"`
 }
 
 func NewUserService(repo *repository.UserRepository) *UserService {
@@ -40,12 +39,12 @@ func (s *UserService) GenerateToken(username, password string) (string, error) {
 		return "", err
 	}
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &tokenClaims{
-		jwt.StandardClaims{
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &RoleBasedClaims{
+		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(12 * time.Hour).Unix(),
 			IssuedAt:  time.Now().Unix(),
 		},
-		user.ID,
+		UserId: user.ID,
 	})
 	return token.SignedString(signingKey)
 }

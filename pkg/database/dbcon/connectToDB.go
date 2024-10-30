@@ -1,10 +1,12 @@
 package dbcon
 
 import (
+	"context"
+	"errors"
 	"fmt"
+	"time"
 
-	"github.com/jmoiron/sqlx"
-	_ "github.com/lib/pq"
+	"github.com/jackc/pgx/v4/pgxpool"
 )
 
 type Config struct {
@@ -16,18 +18,27 @@ type Config struct {
 	SSLMode  string
 }
 
-func ConnectToDB(cfg Config) (*sqlx.DB, error) {
-	connStr := fmt.Sprintf("host = %s port = %s user = %s password = %s dbname = %s sslmode = %s",
-		cfg.Host, cfg.Port, cfg.Username, cfg.Password, cfg.DBName, cfg.SSLMode)
-	DB, err := sqlx.Open("postgres", connStr)
+func ConnectToDB(cfg Config) (*pgxpool.Pool, error) {
+	// Baglanti dizesi olusturuluyor
+	dataSourceName := fmt.Sprintf(
+		"postgres://%s:%s@%s:%s/%s?sslmode=disable",
+		cfg.Username, cfg.Password, cfg.Host, cfg.Port, cfg.DBName)
+
+	// 5 saniyelik zaman asimi ile bir context olusturuyoruz
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel() // fonskiyon bitince context'i iptal ediyoruz
+
+	// Veritabani baglantisi icin pgxpool.Connect baglantisi cagriliyor
+	db, err := pgxpool.Connect(ctx, dataSourceName)
 	if err != nil {
+		// Eger baglanti hatasi varsa, hatayi donduruyoruz
 		return nil, err
 	}
 
-	err = DB.Ping()
-	if err != nil {
-		return nil, err
+	// Her yeni baglamada veritabaninin calisip calismadigni kontrol ediyoruz
+	if err = db.Ping(context.Background()); err != nil {
+		return nil, errors.New("db.Ping")
 	}
 
-	return DB, err
+	return db, nil
 }
